@@ -1,8 +1,9 @@
 from django.test import TestCase
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 
-from .requirements import Staff, SuperUser, LoggedIn, Active
+from .requirements import (
+    Staff, SuperUser, LoggedIn, Active, BaseRequirement, RequirementController)
 from .factories import UserFactory, InActiveUserFactory
 
 
@@ -57,3 +58,57 @@ class TestRequirements(TestCase):
 
         self.set_request(user=UserFactory.build())
         self.assert_requirement_fulfilled(LoggedIn())
+
+
+class SuccessfulRequirement(BaseRequirement):
+    not_fulfilled_called = False
+    is_fulfilled_called = False
+    response_obj = HttpResponseRedirect('lol')
+
+    def not_fulfilled(self):
+        self.not_fulfilled_called = True
+        return self.response_obj
+
+    def is_fulfilled(self):
+        self.is_fulfilled_called = True
+        return True
+
+
+class UnSuccessfulRequirement(SuccessfulRequirement):
+    def is_fulfilled(self):
+        self.is_fulfilled_called = True
+        return False
+
+
+class TestRequirementController(TestCase):
+    def test_successfull(self):
+        first = SuccessfulRequirement()
+        second = SuccessfulRequirement()
+        controller = RequirementController([first, second])
+        result = controller.control({}, [], {})
+        self.assertTrue(result)
+        self.assertTrue(first.is_fulfilled_called)
+        self.assertTrue(second.is_fulfilled_called)
+
+    def test_first_unfulfilled(self):
+        first = UnSuccessfulRequirement()
+        second = SuccessfulRequirement()
+        controller = RequirementController([first, second])
+        result = controller.control({}, [], {})
+        self.assertFalse(result)
+        self.assertTrue(first.is_fulfilled_called)
+        self.assertTrue(first.not_fulfilled_called)
+        self.assertFalse(second.is_fulfilled_called)
+        self.assertEqual(controller.retval, first.response_obj)
+
+    def test_second_unfulfilled(self):
+        first = SuccessfulRequirement()
+        second = UnSuccessfulRequirement()
+        controller = RequirementController([first, second])
+        result = controller.control({}, [], {})
+        self.assertFalse(result)
+        self.assertTrue(first.is_fulfilled_called)
+        self.assertFalse(first.not_fulfilled_called)
+        self.assertTrue(second.is_fulfilled_called)
+        self.assertTrue(second.not_fulfilled_called)
+        self.assertEqual(controller.retval, second.response_obj)

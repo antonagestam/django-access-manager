@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 
-from .requirements import BaseRequirement
+from .requirements import RequirementController
 
 
 class ManagedAccessViewMixin(object):
@@ -8,7 +8,6 @@ class ManagedAccessViewMixin(object):
     Runs checks for requirements before running `dispatch` of the subclass.
     The subclass needs to specify `access_requirements` as an iterable of
     requirements.
-
     """
 
     access_requirements = None
@@ -21,14 +20,12 @@ class ManagedAccessViewMixin(object):
                 "`get_access_requirements` method.")
         return self.access_requirements
 
-    def dispatch(self, *args, **kwargs):
-        klasses = self.get_access_requirements()
+    def dispatch(self, request, *args, **kwargs):
+        requirements = self.get_access_requirements()
+        controller = RequirementController(requirements)
 
-        for requirement in klasses:
-            if not isinstance(requirement, BaseRequirement):
-                requirement = requirement()
-            requirement.setup(*args, **kwargs)
-            if not requirement.is_fulfilled():
-                return requirement.not_fulfilled()
+        if not controller.control(request, args, kwargs):
+            return controller.retval
 
-        return super(ManagedAccessViewMixin, self).dispatch(*args, **kwargs)
+        return super(ManagedAccessViewMixin, self).dispatch(
+            request, *args, **kwargs)
