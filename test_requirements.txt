@@ -1,3 +1,2 @@
--r requirements.txt
 factory-boy==2.2.1
 django-pluggable==0.0.1
