@@ -2,8 +2,7 @@ from django.test import TestCase
 from django.http import HttpRequest
 from django.contrib.auth.models import AnonymousUser
 
-from access_manager.requirements import (
-    Staff, SuperUser, LoggedIn, Active)
+from .requirements import Staff, SuperUser, LoggedIn, Active
 from .factories import UserFactory, InActiveUserFactory
 
 

@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from access_manager.views import ManagedAccessViewMixin
-from access_manager.requirements import BaseRequirement
+from .views import ManagedAccessViewMixin
+from .requirements import BaseRequirement
 
 
 class SuccessfulRequirement(BaseRequirement):

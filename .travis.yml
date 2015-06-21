@@ -1,5 +1,10 @@
 language: python
 python:
   - "2.7"
-install: "pip install -r test_requirements.txt --use-mirrors"
-script: python runtests.py access_manager
+  - "3.4"
+install:
+  - pip install -r test_requirements.txt --use-mirrors
+  - pip install -q Django==$DJANGO_VERSION
+script: make test
+env:
+  - DJANGO_VERSION=1.8.2
