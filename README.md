@@ -30,43 +30,98 @@ Add `'access_manager'` to your installed apps:
 INSTALLED_APPS += ('access_manager', )
 ```
 
-Usage
------
+## Usage
 
-Extend your views with `ManagedAccessViewMixin` and specify view requirements:
+### Requirements
+
+Access requirements are specified by extending the `BaseRequirement` class.
+The `is_fulfilled` method is what defines your logic of when the requirement
+is fulfilled. By overriding `not_fulfilled` you specify what should happen
+if the requirement is not fulfilled. For example this simple `LoggedIn`
+requirement:
 
 ```python
+from django.http import Http404
+from access_manager.requirements import BaseRequirement
+
+
+class LoggedIn(BaseRequirement):
+    def is_fulfilled(self):
+        return self.request.user.is_authenticated()
+    
+    def not_fulfilled(self):
+        return Http404()
+```
+
+__`BaseRequirement.request`:__ Request object. Gets set by `BaseRequirement.setup`.
+
+__`BaseRequirement.args`:__ Request arguments passed to the view. Gets set by `BaseRequirement.setup`.
+
+__`BaseRequirement.kwargs`:__ Request keyword arguments passed to the view. Gets set by `BaseRequirement.setup`.
+
+
+### Views
+
+Access requirements for a view will be evaluated in the order they're specified.
+For example `access_requirements = [LoggedIn, Active]` will have this chain of
+events before the view is executed:
+
+- Check if `LoggedIn.is_fulfilled()` is `True`.
+- If not, make the view return `LoggedIn.not_fulfilled()` and stop.
+- Otherwise, check if `Active.is_fulfilled()` is `True`
+- If not, make the view return `Active.not_fulfilled()` and stop.
+- Otherwise continue to execute the view as normal.
+
+#### Class-based Views
+
+Extend your views with `ManagedAccessViewMixin` and specify `access_requirements`:
+
+```python
+from django.views.generic import TemplateView
 from access_manager.views import ManagedAccessViewMixin
 from access_manager.requirements import Active, LoggedIn
 
 
-class MyView(ManagedAccessViewMixin):
+class MyView(ManagedAccessViewMixin, TemplateView):
     access_requirements = [LoggedIn, Active]
-    
-    # … view code
+    template = 'index.html'
 ```
 
-Custom Requirements
--------------------
+#### Functional Views
 
-Easily specify your own requirements (in a local app or file) by extending the `Requirement` class:
+For functional views, `access_requirements` acts as a decorator and takes a
+list of requirements as positional argument.
 
 ```python
-from access_manager.requirements import BaseRedirectRequirement
+from access_manager.decorators import access_requirements
+from access_manager.requirements import Active, LoggedIn
 
-
-class LoggedIn(BaseExplainedRedirectRequirement):
-    url_name = 'my_login_page'
-
-    def is_fulfilled(self):
-        return (self.request.user.is_authenticated() and
-                self.request.user.is_active)
+@access_requirements([LoggedIn, Active])
+def my_view(request):
+    return "Hello world"
 ```
 
-Advanced Usage
---------------
+### Built-in Requirements
 
-Require a profile field to be `True`:
+__`BasePageNotFoundRequirement(BaseRequirement)`:__ Raises `Http404()` if unfulfilled.
+
+__`Staff(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not staff.
+
+__`SuperUser(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not superuser.
+
+__`Active(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not active.
+
+__`BaseRedirectRequirement(BaseRequirement)`:__ Returns `Http307(self.get_url())` if not fulfilled.
+
+Specify `url_name` or override `get_url` to set URL to redirect to. Appends the current URL
+as ?next=current_url by default, `append_next = False` to prevent this.
+
+__`LoggedIn(BaseRedirectRequirement)`:__ Returns `Http307('login')` if user is not authenticated.
+
+
+### More Advanced Usage Example
+
+Requiring a profile field to be `True` and redirecting if it's not.
 
 ```python
 from access_manager.requirements import BaseRedirectRequirement
