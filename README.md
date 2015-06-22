@@ -1,16 +1,10 @@
-Django Access Manager
-=====================
+# Django Access Manager
 
-An abstract access manager for Django.
+[![Build Status](https://travis-ci.org/antonagestam/django-access-manager.svg?branch=master)](https://travis-ci.org/antonagestam/django-access-manager)
 
-![Build Status](https://travis-ci.org/FundedByMe/django-access-manager.png)
+A tidy and extendable way of defining access requirements for views. Because mixins and decorators gets messy.
 
-A tidy and extendable way of specifying access requirements for views
-instead of defining all the logic inside of the views or using mixins
-for every requirement.
-
-Installation
-------------
+## Installation
 
 Install using pip:
 
@@ -112,9 +106,8 @@ __`SuperUser(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not 
 __`Active(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not active.
 
 __`BaseRedirectRequirement(BaseRequirement)`:__ Returns `Http307(self.get_url())` if not fulfilled.
-
 Specify `url_name` or override `get_url` to set URL to redirect to. Appends the current URL
-as ?next=current_url by default, `append_next = False` to prevent this.
+as ?next=current_url by default, set `append_next = False` to prevent this.
 
 __`LoggedIn(BaseRedirectRequirement)`:__ Returns `Http307('login')` if user is not authenticated.
 
@@ -165,8 +158,7 @@ class MyView(ManagedAccessViewMixin, View):
 ```
 
 
-Run tests
----------
+## Run tests
 
 Install test requirements:
 
@@ -179,3 +171,8 @@ Run tests:
 ```
 $ make test
 ```
+
+## License
+
+django-access-manager is licensed under The MIT License (MIT).
+See [LICENSE file](./LICENSE) for more information.
