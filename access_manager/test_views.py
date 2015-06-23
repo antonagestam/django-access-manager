@@ -78,7 +78,7 @@ class TestAccessRequirementsDecorator(TestCase):
     def test_successfull(self):
         first = SuccessfulRequirement()
         second = SuccessfulRequirement()
-        view = access_requirements(test_view, [first, second])
+        view = access_requirements(first, second)(test_view)
         result = view(self.request)
         self.assertTrue(test_view.dispatch_called)
         self.assertEqual(result, successful_response)
@@ -86,7 +86,7 @@ class TestAccessRequirementsDecorator(TestCase):
     def test_first_unfulfilled(self):
         first = UnSuccessfulRequirement()
         second = SuccessfulRequirement()
-        view = access_requirements(test_view, [first, second])
+        view = access_requirements(first, second)(test_view)
         result = view(self.request)
         self.assertFalse(test_view.dispatch_called)
         self.assertEqual(result, unsuccessful_response)
@@ -94,7 +94,7 @@ class TestAccessRequirementsDecorator(TestCase):
     def test_second_unfulfilled(self):
         first = SuccessfulRequirement()
         second = UnSuccessfulRequirement()
-        view = access_requirements(test_view, [first, second])
+        view = access_requirements(first, second)(test_view)
         result = view(self.request)
         self.assertFalse(test_view.dispatch_called)
         self.assertEqual(result, unsuccessful_response)
