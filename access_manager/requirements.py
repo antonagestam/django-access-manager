@@ -69,3 +69,24 @@ class LoggedIn(BaseRedirectRequirement):
 
     def is_fulfilled(self):
         return self.request.user.is_authenticated()
+
+
+class RequirementController(object):
+    """
+    Encapsulates logic for checking if requirements are fulfilled.
+    See views.ManagedAccessViewMixin.dispatch and decorators.access_requirements
+    for example implementations.
+    """
+    def __init__(self, requirements):
+        self.requirements = requirements
+        self.retval = None
+
+    def control(self, request, args, kwargs):
+        for requirement in self.requirements:
+            if not isinstance(requirement, BaseRequirement):
+                requirement = requirement()
+            requirement.setup(request, *args, **kwargs)
+            if not requirement.is_fulfilled():
+                self.retval = requirement.not_fulfilled()
+                return False
+        return True
