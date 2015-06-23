@@ -18,12 +18,6 @@ Or latest version in repo:
 pip install -e git+https://github.com/FundedByMe/django-access-manager/#egg=access_manager
 ```
 
-Add `'access_manager'` to your installed apps:
-
-```python
-INSTALLED_APPS += ('access_manager', )
-```
-
 ## Usage
 
 ### Requirements
