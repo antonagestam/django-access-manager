@@ -30,7 +30,7 @@ requirement:
 
 ```python
 from django.http import Http404
-from access_manager.requirements import Requirement
+from access.requirements import Requirement
 
 
 class LoggedIn(Requirement):
@@ -66,8 +66,8 @@ Extend your views with `ManagedAccessViewMixin` and specify `access_requirements
 
 ```python
 from django.views.generic import TemplateView
-from access_manager.views import ManagedAccessViewMixin
-from access_manager.requirements import Active, LoggedIn
+from access.views import ManagedAccessViewMixin
+from access.requirements import Active, LoggedIn
 
 
 class MyView(ManagedAccessViewMixin, TemplateView):
@@ -80,7 +80,7 @@ class MyView(ManagedAccessViewMixin, TemplateView):
 For functional views, use `Requirement.as_decorator`.
 
 ```python
-from access_manager.requirements import LoggedIn
+from access.requirements import LoggedIn
 
 @LoggedIn.decorator
 def my_view(request):
@@ -92,8 +92,8 @@ When combining many requirements for a functional view, it's recommended to use
 positional arguments.
 
 ```python
-from access_manager.decorators import access_requirements
-from access_manager.requirements import Active, LoggedIn
+from access.decorators import access_requirements
+from access.requirements import Active, LoggedIn
 
 @access_requirements(LoggedIn, Active)
 def my_view(request):
@@ -122,7 +122,7 @@ __`LoggedIn(RedirectRequirement)`:__ Returns `Http307('login')` if user is not a
 Requiring a profile field to be `True` and redirecting if it's not.
 
 ```python
-from access_manager.requirements import RedirectRequirement
+from access.requirements import RedirectRequirement
 
 
 class ProfileFieldRequirement(RedirectRequirement):
@@ -152,7 +152,7 @@ class ConfirmedEmail(ProfileFieldRequirement):
 
 # … in your views.py:
 
-from access_manager.views import ManagedAccessViewMixin
+from access.views import ManagedAccessViewMixin
 
 
 class MyView(ManagedAccessViewMixin, View):
