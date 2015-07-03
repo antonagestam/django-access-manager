@@ -7,6 +7,7 @@ from .utils import (
     SuccessfulRequirement, UnSuccessfulRequirement, successful_response,
     unsuccessful_response)
 
+
 class TestView(View):
     dispatch_called = False
 

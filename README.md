@@ -77,8 +77,19 @@ class MyView(ManagedAccessViewMixin, TemplateView):
 
 #### Functional Views
 
-For functional views, `access_requirements` returns a decorator and takes
-requirements as positional arguments.
+For functional views, use `Requirement.as_decorator`.
+
+```python
+from access_manager.requirements import LoggedIn
+
+@LoggedIn.decorator
+def my_view(request):
+    return "Hello world"
+```
+
+When combining many requirements for a functional view, it's recommended to use
+`access_requirements`. It returns a decorator and takes requirements as
+positional arguments.
 
 ```python
 from access_manager.decorators import access_requirements
