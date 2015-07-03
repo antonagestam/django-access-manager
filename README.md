@@ -9,13 +9,13 @@ A tidy and extendable way of defining access requirements for views. Because mix
 Install using pip:
 
 ```
-pip install django-access-manager
+pip install django-access-tools
 ```
 
 Or latest version in repo:
 
 ```
-pip install -e git+https://github.com/FundedByMe/django-access-manager/#egg=access_manager
+pip install -e git+https://github.com/antonagestam/django-access-tools/#egg=access
 ```
 
 ## Usage
@@ -179,5 +179,5 @@ $ make test
 
 ## License
 
-django-access-manager is licensed under The MIT License (MIT).
+django-access-tools is licensed under The MIT License (MIT).
 See [LICENSE file](./LICENSE) for more information.

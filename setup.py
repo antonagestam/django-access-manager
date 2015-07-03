@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_packages
-import access_manager
+import access
 
 setup(
-    name='django-access-manager',
-    version=".".join(map(str, access_manager.__version__)),
+    name='django-access-tools',
+    version=".".join(map(str, access.__version__)),
     author='Anton Agestam',
     author_email="msn@antonagestam.se",
-    url='http://github.com/FundedByMe/django-access-manager',
+    url='http://github.com/antonagestam/django-access-tools',
     install_requires=[
-        'Django>=1.4.8',
+        'Django>=1.8.2',
     ],
     description='An abstract access manager for Django.',
     packages=find_packages(),
@@ -20,6 +20,8 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
         "Operating System :: OS Independent",
-        "Topic :: Software Development"
+        "Topic :: Software Development",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
     ],
 )

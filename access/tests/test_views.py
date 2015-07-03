@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.views.generic import View
 
-from access_manager.views import ManagedAccessViewMixin
+from access.views import ManagedAccessViewMixin
 
 from .utils import (
     SuccessfulRequirement, UnSuccessfulRequirement, successful_response,

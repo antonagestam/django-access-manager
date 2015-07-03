@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from access_manager.decorators import access_requirements
+from access.decorators import access_requirements
 
 from .utils import (
     SuccessfulRequirement, UnSuccessfulRequirement, successful_response,
