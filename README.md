@@ -157,7 +157,7 @@ class MyView(ManagedAccessViewMixin, View):
 Install test requirements:
 
 ```
-$ pip install -r test_requirements.txt
+$ pip install -r test-requirements.txt
 ```
 
 Run tests:

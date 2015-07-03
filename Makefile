@@ -2,3 +2,6 @@
 
 test:
 	export PYTHONPATH=`pwd`; runtests.py --settings='test_settings'
+
+lint:
+	flake8 .
