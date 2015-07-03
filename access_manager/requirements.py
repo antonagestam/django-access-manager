@@ -5,7 +5,7 @@ from django.http import Http404
 from .http import Http307
 
 
-class BaseRequirement(object):
+class Requirement(object):
     def setup(self, request, *args, **kwargs):
         self.request = request
         self.args = args
@@ -20,27 +20,27 @@ class BaseRequirement(object):
             "Requirements need to implement a `not_fulfilled` method.")
 
 
-class BasePageNotFoundRequirement(BaseRequirement):
+class PageNotFoundRequirement(Requirement):
     def not_fulfilled(self):
         raise Http404()
 
 
-class Staff(BasePageNotFoundRequirement):
+class Staff(PageNotFoundRequirement):
     def is_fulfilled(self):
         return self.request.user.is_staff
 
 
-class SuperUser(BasePageNotFoundRequirement):
+class SuperUser(PageNotFoundRequirement):
     def is_fulfilled(self):
         return self.request.user.is_superuser
 
 
-class Active(BasePageNotFoundRequirement):
+class Active(PageNotFoundRequirement):
     def is_fulfilled(self):
         return self.request.user.is_active
 
 
-class BaseRedirectRequirement(BaseRequirement):
+class RedirectRequirement(Requirement):
     url_name = None
     append_next = True
 
@@ -64,7 +64,7 @@ class BaseRedirectRequirement(BaseRequirement):
         return Http307(self.get_url())
 
 
-class LoggedIn(BaseRedirectRequirement):
+class LoggedIn(RedirectRequirement):
     url_name = 'login'
 
     def is_fulfilled(self):
@@ -83,7 +83,7 @@ class RequirementController(object):
 
     def control(self, request, args, kwargs):
         for requirement in self.requirements:
-            if not isinstance(requirement, BaseRequirement):
+            if not isinstance(requirement, Requirement):
                 requirement = requirement()
             requirement.setup(request, *args, **kwargs)
             if not requirement.is_fulfilled():

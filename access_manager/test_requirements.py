@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 
 from .requirements import (
-    Staff, SuperUser, LoggedIn, Active, BaseRequirement, RequirementController)
+    Staff, SuperUser, LoggedIn, Active, Requirement, RequirementController)
 from .factories import UserFactory, InActiveUserFactory
 
 
@@ -60,7 +60,7 @@ class TestRequirements(TestCase):
         self.assert_requirement_fulfilled(LoggedIn())
 
 
-class SuccessfulRequirement(BaseRequirement):
+class SuccessfulRequirement(Requirement):
     not_fulfilled_called = False
     is_fulfilled_called = False
     response_obj = HttpResponseRedirect('lol')

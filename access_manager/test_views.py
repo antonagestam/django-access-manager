@@ -3,19 +3,19 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View
 
 from .views import ManagedAccessViewMixin
-from .requirements import BaseRequirement
+from .requirements import Requirement
 from .decorators import access_requirements
 
 successful_response = HttpResponseRedirect('lol')
 unsuccessful_response = HttpResponseRedirect('woot')
 
 
-class SuccessfulRequirement(BaseRequirement):
+class SuccessfulRequirement(Requirement):
     def is_fulfilled(self):
         return True
 
 
-class UnSuccessfulRequirement(BaseRequirement):
+class UnSuccessfulRequirement(Requirement):
     def not_fulfilled(self):
         return unsuccessful_response
 
