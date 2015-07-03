@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 
-from access_manager.requirements import Requirement
+from access.requirements import Requirement
 
 successful_response = HttpResponseRedirect('lol')
 unsuccessful_response = HttpResponseRedirect('woot')

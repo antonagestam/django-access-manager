@@ -10,5 +10,5 @@ DATABASES = {
 INSTALLED_APPS = (
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "access_manager",
+    "access",
 )
