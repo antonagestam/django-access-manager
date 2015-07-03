@@ -28,7 +28,7 @@ INSTALLED_APPS += ('access_manager', )
 
 ### Requirements
 
-Access requirements are specified by extending the `BaseRequirement` class.
+Access requirements are specified by extending the `Requirement` class.
 The `is_fulfilled` method is what defines your logic of when the requirement
 is fulfilled. By overriding `not_fulfilled` you specify what should happen
 if the requirement is not fulfilled. For example this simple `LoggedIn`
@@ -36,10 +36,10 @@ requirement:
 
 ```python
 from django.http import Http404
-from access_manager.requirements import BaseRequirement
+from access_manager.requirements import Requirement
 
 
-class LoggedIn(BaseRequirement):
+class LoggedIn(Requirement):
     def is_fulfilled(self):
         return self.request.user.is_authenticated()
     
@@ -47,11 +47,11 @@ class LoggedIn(BaseRequirement):
         return Http404()
 ```
 
-__`BaseRequirement.request`:__ Request object. Gets set by `BaseRequirement.setup`.
+__`Requirement.request`:__ Request object. Gets set by `Requirement.setup`.
 
-__`BaseRequirement.args`:__ Request arguments passed to the view. Gets set by `BaseRequirement.setup`.
+__`Requirement.args`:__ Request arguments passed to the view. Gets set by `Requirement.setup`.
 
-__`BaseRequirement.kwargs`:__ Request keyword arguments passed to the view. Gets set by `BaseRequirement.setup`.
+__`Requirement.kwargs`:__ Request keyword arguments passed to the view. Gets set by `Requirement.setup`.
 
 
 ### Views
@@ -97,19 +97,19 @@ def my_view(request):
 
 ### Built-in Requirements
 
-__`BasePageNotFoundRequirement(BaseRequirement)`:__ Raises `Http404()` if unfulfilled.
+__`PageNotFoundRequirement(Requirement)`:__ Raises `Http404()` if unfulfilled.
 
-__`Staff(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not staff.
+__`Staff(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not staff.
 
-__`SuperUser(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not superuser.
+__`SuperUser(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not superuser.
 
-__`Active(BasePageNotFoundRequirement)`:__ Raises `Http404()` if user is not active.
+__`Active(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not active.
 
-__`BaseRedirectRequirement(BaseRequirement)`:__ Returns `Http307(self.get_url())` if not fulfilled.
+__`RedirectRequirement(Requirement)`:__ Returns `Http307(self.get_url())` if not fulfilled.
 Specify `url_name` or override `get_url` to set URL to redirect to. Appends the current URL
 as ?next=current_url by default, set `append_next = False` to prevent this.
 
-__`LoggedIn(BaseRedirectRequirement)`:__ Returns `Http307('login')` if user is not authenticated.
+__`LoggedIn(RedirectRequirement)`:__ Returns `Http307('login')` if user is not authenticated.
 
 
 ### More Advanced Usage Example
@@ -117,15 +117,15 @@ __`LoggedIn(BaseRedirectRequirement)`:__ Returns `Http307('login')` if user is n
 Requiring a profile field to be `True` and redirecting if it's not.
 
 ```python
-from access_manager.requirements import BaseRedirectRequirement
+from access_manager.requirements import RedirectRequirement
 
 
-class BaseProfileFieldRequirement(BaseRedirectRequirement):
+class ProfileFieldRequirement(RedirectRequirement):
     profile_field_name = None
 
     def __init__(self, *args, **kwargs):
         self.required_field_value = kwargs.pop('required_field_value', True)
-        super(BaseProfileFieldRequirement, self).__init__(*args, **kwargs)
+        super(ProfileFieldRequirement, self).__init__(*args, **kwargs)
 
     def is_fulfilled(self):
         if self.profile_field_name is None:
@@ -136,12 +136,12 @@ class BaseProfileFieldRequirement(BaseRedirectRequirement):
         return value == self.required_field_value
 
 
-class AcceptedTerms(BaseProfileFieldRequirement):
+class AcceptedTerms(ProfileFieldRequirement):
     url_name = 'accept_tos'
     profile_field_name = 'accepted_terms'
 
 
-class ConfirmedEmail(BaseProfileFieldRequirement):
+class ConfirmedEmail(ProfileFieldRequirement):
     url_name = 'prompt_email'
     profile_field_name = 'confirmed_email'
 
