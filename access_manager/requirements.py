@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -18,6 +20,16 @@ class Requirement(object):
     def not_fulfilled(self):
         raise ImproperlyConfigured(
             "Requirements need to implement a `not_fulfilled` method.")
+
+    def decorator(self, fn):
+        controller = RequirementController([self])
+
+        @wraps(fn)
+        def wrapper(request, *args, **kwargs):
+            if not controller.control(request, args, kwargs):
+                return controller.retval
+            return fn(request, *args, **kwargs)
+        return wrapper
 
 
 class PageNotFoundRequirement(Requirement):

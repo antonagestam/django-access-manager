@@ -2,9 +2,9 @@ from django.test import TestCase
 from django.http import HttpRequest, HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 
-from .requirements import (
+from access_manager.requirements import (
     Staff, SuperUser, LoggedIn, Active, Requirement, RequirementController)
-from .factories import UserFactory, InActiveUserFactory
+from access_manager.factories import UserFactory, InActiveUserFactory
 
 
 class TestRequirements(TestCase):
