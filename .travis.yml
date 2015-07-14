@@ -11,3 +11,5 @@ script:
 env:
   - DJANGO_VERSION=1.8.2
 sudo: false
+notifications:
+  email: false
