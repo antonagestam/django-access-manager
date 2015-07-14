@@ -1,6 +1,6 @@
 # Django Access Manager
 
-[![Build Status](https://travis-ci.org/antonagestam/django-access-manager.svg?branch=master)](https://travis-ci.org/antonagestam/django-access-manager)
+[![Build Status](https://travis-ci.org/antonagestam/django-access-tools.svg?branch=master)](https://travis-ci.org/antonagestam/django-access-tools)
 
 A tidy and extendable way of defining access requirements for views. Because mixins and decorators gets messy.
 
