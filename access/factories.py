@@ -5,7 +5,8 @@ import factory
 
 
 class InActiveUserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
+    class Meta:
+        model = User
 
     username = factory.Sequence(lambda n: 'user{0}'.format(n))
     first_name = "Bill"

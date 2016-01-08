@@ -9,7 +9,8 @@ script:
   - make lint
   - make test
 env:
-  - DJANGO_VERSION=1.8.2
+  - DJANGO_VERSION=1.8.8
+  - DJANGO_VERSION=1.9.1
 sudo: false
 notifications:
   email: false
