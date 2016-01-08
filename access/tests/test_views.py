@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.views.generic import View
+from django.core.exceptions import ImproperlyConfigured
 
 from access.views import ManagedAccessViewMixin
 
@@ -48,3 +49,8 @@ class TestManagedAccessViewMixin(TestCase):
         result = self.view.dispatch(self.request)
         self.assertFalse(self.view.dispatch_called)
         self.assertEqual(result, unsuccessful_response)
+
+    def test_get_access_requirements(self):
+        with self.assertRaises(ImproperlyConfigured):
+            self.view.get_access_requirements()
+        self.view.access_requirements = []
