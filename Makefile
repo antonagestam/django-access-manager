@@ -1,7 +1,7 @@
-.PHONY: test
+.PHONY: test lint
 
 test:
-	export PYTHONPATH=`pwd`; runtests.py --settings='test_settings'
+	python runtests.py
 
 lint:
 	flake8 .
