@@ -95,8 +95,6 @@ class RequirementController(object):
 
     def control(self, request, args, kwargs):
         for requirement in self.requirements:
-            if not isinstance(requirement, Requirement):
-                requirement = requirement()
             requirement.setup(request, *args, **kwargs)
             if not requirement.is_fulfilled():
                 self.retval = requirement.not_fulfilled()

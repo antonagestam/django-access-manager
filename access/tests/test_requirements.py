@@ -1,9 +1,11 @@
 from django.test import TestCase
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, Http404
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ImproperlyConfigured
 
 from access.requirements import (
-    Staff, SuperUser, LoggedIn, Active, Requirement, RequirementController)
+    Staff, SuperUser, LoggedIn, Active, Requirement, RequirementController,
+    PageNotFoundRequirement)
 from access.factories import UserFactory, InActiveUserFactory
 
 
@@ -27,6 +29,12 @@ class TestRequirements(TestCase):
         requirement.setup(self.request)
         self.assertFalse(
             requirement.is_fulfilled(), msg="The requirement is fulfilled")
+
+    def test_requirement(self):
+        with self.assertRaises(ImproperlyConfigured):
+            Requirement().is_fulfilled()
+        with self.assertRaises(ImproperlyConfigured):
+            Requirement().not_fulfilled()
 
     def test_staff(self):
         user = UserFactory.build(is_staff=False)
@@ -58,6 +66,10 @@ class TestRequirements(TestCase):
 
         self.set_request(user=UserFactory.build())
         self.assert_requirement_fulfilled(LoggedIn())
+
+    def test_page_not_found(self):
+        with self.assertRaises(Http404):
+            PageNotFoundRequirement().not_fulfilled()
 
 
 class SuccessfulRequirement(Requirement):
