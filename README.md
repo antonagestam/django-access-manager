@@ -120,7 +120,15 @@ __`LoggedIn(RedirectRequirement)`:__ Returns `Http307('login')` if user is not a
 
 ### More Advanced Usage Example
 
-Requiring a profile field to be `True` and redirecting if it's not.
+Let's say you have a view where the user should only be allowed access
+if they've accepted your terms of service and confirmed their email
+address.
+
+This example redirects the user to different views depending on if
+they've accepted the terms of service and confirmed their email.
+`RedirectRequirement` appends `?next={url}` to the redirect URLs
+so that those views can redirect the user back after completing the
+steps.
 
 ```python
 from access.requirements import RedirectRequirement
