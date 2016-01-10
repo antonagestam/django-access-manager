@@ -1,4 +1,4 @@
-# Django Access Manager
+# Django Access Tools
 
 [![Build Status](https://travis-ci.org/antonagestam/django-access-tools.svg?branch=master)](https://travis-ci.org/antonagestam/django-access-tools)
 [![Coverage Status](https://coveralls.io/repos/antonagestam/django-access-tools/badge.svg?branch=coverage&service=github)](https://coveralls.io/github/antonagestam/django-access-tools?branch=coverage)
