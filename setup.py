@@ -8,7 +8,7 @@ setup(
     version=".".join(map(str, access.__version__)),
     author='Anton Agestam',
     author_email="msn@antonagestam.se",
-    url='http://github.com/antonagestam/django-access-tools',
+    url='http://antonagestam.github.io/django-access-tools',
     install_requires=[
         'Django>=1.8.2',
     ],
@@ -18,7 +18,6 @@ setup(
     classifiers=[
         "Framework :: Django",
         "Intended Audience :: Developers",
-        "Intended Audience :: System Administrators",
         "Operating System :: OS Independent",
         "Topic :: Software Development",
         "Programming Language :: Python :: 2.7",
