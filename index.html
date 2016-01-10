@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>django-access-tools by antonagestam</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>django-access-tools</h1>
+        <p>An abstract access manager for Django</p>
+
+        <p class="view"><a href="https://github.com/antonagestam/django-access-tools">View the Project on GitHub <small>antonagestam/django-access-tools</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/antonagestam/django-access-tools/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/antonagestam/django-access-tools/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/antonagestam/django-access-tools">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="django-access-tools" class="anchor" href="#django-access-tools" aria-hidden="true"><span class="octicon octicon-link"></span></a>Django Access Tools</h1>
+
+<p><a href="https://travis-ci.org/antonagestam/django-access-tools"><img src="https://travis-ci.org/antonagestam/django-access-tools.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/github/antonagestam/django-access-tools?branch=coverage"><img src="https://coveralls.io/repos/antonagestam/django-access-tools/badge.svg?branch=coverage&amp;service=github" alt="Coverage Status"></a></p>
+
+<p>A tidy and extendable way of defining access requirements for views. Because mixins and decorators gets messy.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Install using pip:</p>
+
+<pre><code>pip install django-access-tools
+</code></pre>
+
+<p>Or latest version in repo:</p>
+
+<pre><code>pip install -e git+https://github.com/antonagestam/django-access-tools/#egg=access
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
+
+<p>Access requirements are specified by extending the <code>Requirement</code> class.
+The <code>is_fulfilled</code> method is what defines your logic of when the requirement
+is fulfilled. By overriding <code>not_fulfilled</code> you specify what should happen
+if the requirement is not fulfilled. For example this simple <code>LoggedIn</code>
+requirement:</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> django.http <span class="pl-k">import</span> Http404
+<span class="pl-k">from</span> access.requirements <span class="pl-k">import</span> Requirement
+
+
+<span class="pl-k">class</span> <span class="pl-en">LoggedIn</span>(<span class="pl-e">Requirement</span>):
+    <span class="pl-k">def</span> <span class="pl-en">is_fulfilled</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">return</span> <span class="pl-v">self</span>.request.user.is_authenticated()
+
+    <span class="pl-k">def</span> <span class="pl-en">not_fulfilled</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">return</span> Http404()</pre></div>
+
+<p><strong><code>Requirement.request</code>:</strong> Request object. Gets set by <code>Requirement.setup</code>.</p>
+
+<p><strong><code>Requirement.args</code>:</strong> Request arguments passed to the view. Gets set by <code>Requirement.setup</code>.</p>
+
+<p><strong><code>Requirement.kwargs</code>:</strong> Request keyword arguments passed to the view. Gets set by <code>Requirement.setup</code>.</p>
+
+<h3>
+<a id="views" class="anchor" href="#views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Views</h3>
+
+<p>Access requirements for a view will be evaluated in the order they're specified.
+For example <code>access_requirements = [LoggedIn, Active]</code> will have this chain of
+events before the view is executed:</p>
+
+<ul>
+<li>Check if <code>LoggedIn.is_fulfilled()</code> is <code>True</code>.</li>
+<li>If not, make the view return <code>LoggedIn.not_fulfilled()</code> and stop.</li>
+<li>Otherwise, check if <code>Active.is_fulfilled()</code> is <code>True</code>
+</li>
+<li>If not, make the view return <code>Active.not_fulfilled()</code> and stop.</li>
+<li>Otherwise continue to execute the view as normal.</li>
+</ul>
+
+<h4>
+<a id="class-based-views" class="anchor" href="#class-based-views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Class-based Views</h4>
+
+<p>Extend your views with <code>ManagedAccessViewMixin</code> and specify <code>access_requirements</code>:</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> django.views.generic <span class="pl-k">import</span> TemplateView
+<span class="pl-k">from</span> access.views <span class="pl-k">import</span> ManagedAccessViewMixin
+<span class="pl-k">from</span> access.requirements <span class="pl-k">import</span> Active, LoggedIn
+
+
+<span class="pl-k">class</span> <span class="pl-en">MyView</span>(<span class="pl-e">ManagedAccessViewMixin</span>, <span class="pl-e">TemplateView</span>):
+    access_requirements <span class="pl-k">=</span> [LoggedIn, Active]
+    template <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>index.html<span class="pl-pds">'</span></span></pre></div>
+
+<h4>
+<a id="functional-views" class="anchor" href="#functional-views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Functional Views</h4>
+
+<p>For functional views, use <code>Requirement.as_decorator</code>.</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> access.requirements <span class="pl-k">import</span> LoggedIn
+
+<span class="pl-en">@LoggedIn.decorator</span>
+<span class="pl-k">def</span> <span class="pl-en">my_view</span>(<span class="pl-smi">request</span>):
+    <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>Hello world<span class="pl-pds">"</span></span></pre></div>
+
+<p>When combining many requirements for a functional view, it's recommended to use
+<code>access_requirements</code>. It returns a decorator and takes requirements as
+positional arguments.</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> access.decorators <span class="pl-k">import</span> access_requirements
+<span class="pl-k">from</span> access.requirements <span class="pl-k">import</span> Active, LoggedIn
+
+<span class="pl-en">@</span><span class="pl-en">access_requirements</span>(LoggedIn, Active)
+<span class="pl-k">def</span> <span class="pl-en">my_view</span>(<span class="pl-smi">request</span>):
+    <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>Hello world<span class="pl-pds">"</span></span></pre></div>
+
+<h3>
+<a id="built-in-requirements" class="anchor" href="#built-in-requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Built-in Requirements</h3>
+
+<p><strong><code>PageNotFoundRequirement(Requirement)</code>:</strong> Raises <code>Http404()</code> if unfulfilled.</p>
+
+<p><strong><code>Staff(PageNotFoundRequirement)</code>:</strong> Raises <code>Http404()</code> if user is not staff.</p>
+
+<p><strong><code>SuperUser(PageNotFoundRequirement)</code>:</strong> Raises <code>Http404()</code> if user is not superuser.</p>
+
+<p><strong><code>Active(PageNotFoundRequirement)</code>:</strong> Raises <code>Http404()</code> if user is not active.</p>
+
+<p><strong><code>RedirectRequirement(Requirement)</code>:</strong> Returns <code>Http307(self.get_url())</code> if not fulfilled.
+Specify <code>url_name</code> or override <code>get_url</code> to set URL to redirect to. Appends the current URL
+as ?next=current_url by default, set <code>append_next = False</code> to prevent this.</p>
+
+<p><strong><code>LoggedIn(RedirectRequirement)</code>:</strong> Returns <code>Http307('login')</code> if user is not authenticated.</p>
+
+<h3>
+<a id="more-advanced-usage-example" class="anchor" href="#more-advanced-usage-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>More Advanced Usage Example</h3>
+
+<p>Let's say you have a view where the user should only be allowed access
+if they've accepted your terms of service and confirmed their email
+address.</p>
+
+<p>This example redirects the user to different views depending on if
+they've accepted the terms of service and confirmed their email.
+<code>RedirectRequirement</code> appends <code>?next={url}</code> to the redirect URLs
+so that those views can redirect the user back after completing the
+steps.</p>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">from</span> access.requirements <span class="pl-k">import</span> RedirectRequirement
+
+
+<span class="pl-k">class</span> <span class="pl-en">ProfileFieldRequirement</span>(<span class="pl-e">RedirectRequirement</span>):
+    profile_field_name <span class="pl-k">=</span> <span class="pl-c1">None</span>
+
+    <span class="pl-k">def</span> <span class="pl-en"><span class="pl-c1">__init__</span></span>(<span class="pl-smi">self</span>, *<span class="pl-smi">args</span>, **<span class="pl-smi">kwargs</span>):
+        <span class="pl-v">self</span>.required_field_value <span class="pl-k">=</span> kwargs.pop(<span class="pl-s"><span class="pl-pds">'</span>required_field_value<span class="pl-pds">'</span></span>, <span class="pl-c1">True</span>)
+        <span class="pl-c1">super</span>(ProfileFieldRequirement, <span class="pl-v">self</span>).__init__(<span class="pl-k">*</span>args, <span class="pl-k">**</span>kwargs)
+
+    <span class="pl-k">def</span> <span class="pl-en">is_fulfilled</span>(<span class="pl-smi">self</span>):
+        <span class="pl-k">if</span> <span class="pl-v">self</span>.profile_field_name <span class="pl-k">is</span> <span class="pl-c1">None</span>:
+            <span class="pl-k">raise</span> ImproperlyConfigured(
+                <span class="pl-s"><span class="pl-pds">"</span>ProfileFieldRequirements need to specify <span class="pl-pds">"</span></span>
+                <span class="pl-s"><span class="pl-pds">"</span>`profile_field_name`.<span class="pl-pds">"</span></span>)
+        value <span class="pl-k">=</span> <span class="pl-c1">getattr</span>(<span class="pl-v">self</span>.request.user.profile, <span class="pl-v">self</span>.profile_field_name)
+        <span class="pl-k">return</span> value <span class="pl-k">==</span> <span class="pl-v">self</span>.required_field_value
+
+
+<span class="pl-k">class</span> <span class="pl-en">AcceptedTerms</span>(<span class="pl-e">ProfileFieldRequirement</span>):
+    url_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>accept_tos<span class="pl-pds">'</span></span>
+    profile_field_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>accepted_terms<span class="pl-pds">'</span></span>
+
+
+<span class="pl-k">class</span> <span class="pl-en">ConfirmedEmail</span>(<span class="pl-e">ProfileFieldRequirement</span>):
+    url_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>prompt_email<span class="pl-pds">'</span></span>
+    profile_field_name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>confirmed_email<span class="pl-pds">'</span></span>
+
+<span class="pl-c"># … in your views.py:</span>
+
+<span class="pl-k">from</span> access.views <span class="pl-k">import</span> ManagedAccessViewMixin
+
+
+<span class="pl-k">class</span> <span class="pl-en">MyView</span>(<span class="pl-e">ManagedAccessViewMixin</span>, <span class="pl-e">View</span>):
+    access_requirements <span class="pl-k">=</span> [AcceptedTerms, ConfirmedEmail]
+
+    <span class="pl-c"># … view code</span>
+</pre></div>
+
+<h2>
+<a id="run-tests" class="anchor" href="#run-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run tests</h2>
+
+<p>Install test requirements:</p>
+
+<pre><code>$ pip install -r test-requirements.txt
+</code></pre>
+
+<p>Run tests:</p>
+
+<pre><code>$ make test
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>django-access-tools is licensed under The MIT License (MIT).
+See <a href="./LICENSE">LICENSE file</a> for more information.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/antonagestam">antonagestam</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
