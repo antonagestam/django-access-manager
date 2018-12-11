@@ -47,7 +47,7 @@ class TestAsDecorator(TestCase):
         self.request = {}
         test_view.dispatch_called = False
 
-    def test_successfull(self):
+    def test_successful(self):
         first = SuccessfulRequirement()
         second = SuccessfulRequirement()
         view = second.decorator(first.decorator(test_view))

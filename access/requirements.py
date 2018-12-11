@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404
 
 from .http import Http307
@@ -80,7 +80,7 @@ class LoggedIn(RedirectRequirement):
     url_name = 'login'
 
     def is_fulfilled(self):
-        return self.request.user.is_authenticated()
+        return self.request.user.is_authenticated
 
 
 class RequirementController(object):
