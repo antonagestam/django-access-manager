@@ -1,7 +1,7 @@
 language: python
 install:
-  - pip install -r test-requirements.txt
   - pip install -q Django==$DJANGO_VERSION
+  - pip install .[test]
 script:
   - make lint
   - make test-coverage
@@ -12,14 +12,9 @@ dist: xenial
 notifications:
   email: false
 python:
-  - "3.4"
-  - "3.5"
   - "3.6"
   - "3.7"
+  - "3.8"
 env:
-  - DJANGO_VERSION=2.0
-  - DJANGO_VERSION=2.1
-matrix:
-  exclude:
-    - python: "3.4"
-      env: DJANGO_VERSION=2.1
+  - DJANGO_VERSION=2.2
+  - DJANGO_VERSION=3.0

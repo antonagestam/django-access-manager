@@ -1,3 +1,0 @@
-factory-boy==2.8.1
-flake8==2.5.1
-coveralls==1.1

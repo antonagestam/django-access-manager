@@ -3,7 +3,8 @@
 [![Build Status](https://travis-ci.org/antonagestam/django-access-tools.svg?branch=master)](https://travis-ci.org/antonagestam/django-access-tools)
 [![Coverage Status](https://coveralls.io/repos/antonagestam/django-access-tools/badge.svg?service=github)](https://coveralls.io/github/antonagestam/django-access-tools?branch=coverage)
 
-A tidy and extendable way of defining access requirements for views. Because mixins and decorators gets messy.
+A tidy and extendable way of defining access requirements for views. Because
+mixins and decorators gets messy.
 
 ## Installation
 
@@ -44,9 +45,11 @@ class LoggedIn(Requirement):
 
 __`Requirement.request`:__ Request object. Gets set by `Requirement.setup`.
 
-__`Requirement.args`:__ Request arguments passed to the view. Gets set by `Requirement.setup`.
+__`Requirement.args`:__ Request arguments passed to the view. Gets set by
+`Requirement.setup`.
 
-__`Requirement.kwargs`:__ Request keyword arguments passed to the view. Gets set by `Requirement.setup`.
+__`Requirement.kwargs`:__ Request keyword arguments passed to the view. Gets set
+by `Requirement.setup`.
 
 
 ### Views
@@ -63,7 +66,8 @@ events before the view is executed:
 
 #### Class-based Views
 
-Extend your views with `ManagedAccessViewMixin` and specify `access_requirements`:
+Extend your views with `ManagedAccessViewMixin` and specify
+`access_requirements`:
 
 ```python
 from django.views.generic import TemplateView
@@ -107,15 +111,18 @@ __`PageNotFoundRequirement(Requirement)`:__ Raises `Http404()` if unfulfilled.
 
 __`Staff(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not staff.
 
-__`SuperUser(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not superuser.
+__`SuperUser(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not
+superuser.
 
 __`Active(PageNotFoundRequirement)`:__ Raises `Http404()` if user is not active.
 
-__`RedirectRequirement(Requirement)`:__ Returns `Http307(self.get_url())` if not fulfilled.
-Specify `url_name` or override `get_url` to set URL to redirect to. Appends the current URL
-as ?next=current_url by default, set `append_next = False` to prevent this.
+__`RedirectRequirement(Requirement)`:__ Returns `Http307(self.get_url())` if not
+fulfilled. Specify `url_name` or override `get_url` to set URL to redirect to.
+Appends the current URL as ?next=current_url by default, set `append_next =
+False` to prevent this.
 
-__`LoggedIn(RedirectRequirement)`:__ Returns `Http307('login')` if user is not authenticated.
+__`LoggedIn(RedirectRequirement)`:__ Returns `Http307('login')` if user is not
+authenticated.
 
 
 ### More Advanced Usage Example
@@ -159,7 +166,7 @@ class ConfirmedEmail(ProfileFieldRequirement):
     url_name = 'prompt_email'
     profile_field_name = 'confirmed_email'
 
-# … in your views.py:
+# ... in your views.py:
 
 from access.views import ManagedAccessViewMixin
 
@@ -167,7 +174,7 @@ from access.views import ManagedAccessViewMixin
 class MyView(ManagedAccessViewMixin, View):
     access_requirements = [AcceptedTerms, ConfirmedEmail]
     
-    # … view code
+    # ... view code
  
 ```
 

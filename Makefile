@@ -1,7 +1,11 @@
-.PHONY: test lint test-coverage coveralls
+.PHONY: test lint test-coverage coveralls install-test-requirements distribute
+SHELL := /usr/bin/env bash
 
 test:
-	python runtests.py
+	python3 runtests.py
+
+install-test-requirements:
+	python3 -m pip install -e .[test]
 
 lint:
 	flake8 .
@@ -12,5 +16,10 @@ test-coverage:
 coveralls:
 	coveralls
 
+clean:
+	rm -rf django_access_tools.egg-info __pycache__ build dist
+
 distribute:
-	python setup.py sdist bdist_wheel upload
+	python3 -m pip install --upgrade wheel twine setuptools
+	python3 setup.py sdist bdist_wheel
+	twine upload dist/*

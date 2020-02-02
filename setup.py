@@ -9,9 +9,10 @@ setup(
     author='Anton Agestam',
     author_email="msn@antonagestam.se",
     url='http://antonagestam.github.io/django-access-tools',
-    install_requires=[
-        'Django>=2.0',
-    ],
+    install_requires=['Django>=2.0'],
+    extras_require={
+        "test": ["factory-boy<3", "flake8<4", "coveralls<2"],
+    },
     description='An abstract access manager for Django.',
     packages=find_packages(),
     include_package_data=True,
