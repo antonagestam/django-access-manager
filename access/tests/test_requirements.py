@@ -4,8 +4,14 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 
 from access.requirements import (
-    Staff, SuperUser, LoggedIn, Active, Requirement, RequirementController,
-    PageNotFoundRequirement)
+    Staff,
+    SuperUser,
+    LoggedIn,
+    Active,
+    Requirement,
+    RequirementController,
+    PageNotFoundRequirement,
+)
 from access.factories import UserFactory, InActiveUserFactory
 
 
@@ -23,12 +29,12 @@ class TestRequirements(TestCase):
     def assert_requirement_fulfilled(self, requirement):
         requirement.setup(self.request)
         self.assertTrue(
-            requirement.is_fulfilled(), msg="The requirement is not fulfilled")
+            requirement.is_fulfilled(), msg="The requirement is not fulfilled"
+        )
 
     def assert_requirement_unfulfilled(self, requirement):
         requirement.setup(self.request)
-        self.assertFalse(
-            requirement.is_fulfilled(), msg="The requirement is fulfilled")
+        self.assertFalse(requirement.is_fulfilled(), msg="The requirement is fulfilled")
 
     def test_requirement(self):
         with self.assertRaises(ImproperlyConfigured):
@@ -75,7 +81,7 @@ class TestRequirements(TestCase):
 class SuccessfulRequirement(Requirement):
     not_fulfilled_called = False
     is_fulfilled_called = False
-    response_obj = HttpResponseRedirect('lol')
+    response_obj = HttpResponseRedirect("lol")
 
     def not_fulfilled(self):
         self.not_fulfilled_called = True

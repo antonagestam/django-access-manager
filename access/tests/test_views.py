@@ -5,8 +5,11 @@ from django.core.exceptions import ImproperlyConfigured
 from access.views import ManagedAccessViewMixin
 
 from .utils import (
-    SuccessfulRequirement, UnSuccessfulRequirement, successful_response,
-    unsuccessful_response)
+    SuccessfulRequirement,
+    UnSuccessfulRequirement,
+    successful_response,
+    unsuccessful_response,
+)
 
 
 class TestView(View):

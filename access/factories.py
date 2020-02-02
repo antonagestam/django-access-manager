@@ -8,7 +8,7 @@ class InActiveUserFactory(factory.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Sequence(lambda n: 'user{0}'.format(n))
+    username = factory.Sequence(lambda n: "user{0}".format(n))
     first_name = "Bill"
     last_name = "Murray"
     is_active = False

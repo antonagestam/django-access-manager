@@ -17,7 +17,8 @@ class ManagedAccessViewMixin(object):
             raise ImproperlyConfigured(
                 "Views that extends ManagedAccessViewMixin need to specify "
                 "`access_requirements` or implement a "
-                "`get_access_requirements` method.")
+                "`get_access_requirements` method."
+            )
         return self.access_requirements
 
     def dispatch(self, request, *args, **kwargs):
@@ -27,5 +28,4 @@ class ManagedAccessViewMixin(object):
         if not controller.control(request, args, kwargs):
             return controller.retval
 
-        return super(ManagedAccessViewMixin, self).dispatch(
-            request, *args, **kwargs)
+        return super(ManagedAccessViewMixin, self).dispatch(request, *args, **kwargs)

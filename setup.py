@@ -4,16 +4,14 @@ from setuptools import setup, find_packages
 import access
 
 setup(
-    name='django-access-tools',
-    version=".".join(map(str, access.__version__)),
-    author='Anton Agestam',
+    name="django-access-tools",
+    version=access.__version__,
+    author="Anton Agestam",
     author_email="msn@antonagestam.se",
-    url='http://antonagestam.github.io/django-access-tools',
-    install_requires=['Django>=2.0'],
-    extras_require={
-        "test": ["factory-boy<3", "flake8<4", "coveralls<2"],
-    },
-    description='An abstract access manager for Django.',
+    url="http://antonagestam.github.io/django-access-tools",
+    install_requires=["Django>=2.0"],
+    extras_require={"test": ["factory-boy<3", "flake8<4", "coveralls<2", "black"]},
+    description="An abstract access manager for Django.",
     packages=find_packages(),
     include_package_data=True,
     classifiers=[

@@ -9,22 +9,24 @@ from django.test.runner import DiscoverRunner
 
 
 if __name__ == "__main__":
-    settings.configure(**{
-        'DATABASES': {
-            'default': {
-                "ENGINE": 'django.db.backends.sqlite3',
-                "NAME": "",
-                "USER": "",
-                "PASSWORD": "",
-            }
-        },
-        'INSTALLED_APPS': (
-            "django.contrib.auth",
-            "django.contrib.contenttypes",
-            "access",
-        ),
-    })
+    settings.configure(
+        **{
+            "DATABASES": {
+                "default": {
+                    "ENGINE": "django.db.backends.sqlite3",
+                    "NAME": "",
+                    "USER": "",
+                    "PASSWORD": "",
+                }
+            },
+            "INSTALLED_APPS": (
+                "django.contrib.auth",
+                "django.contrib.contenttypes",
+                "access",
+            ),
+        }
+    )
     setup()
-    failures = DiscoverRunner(verbosity=1).run_tests(['access'])
+    failures = DiscoverRunner(verbosity=1).run_tests(["access"])
     if failures:
         sys.exit(failures)

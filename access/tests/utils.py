@@ -2,8 +2,8 @@ from django.http import HttpResponseRedirect
 
 from access.requirements import Requirement
 
-successful_response = HttpResponseRedirect('lol')
-unsuccessful_response = HttpResponseRedirect('woot')
+successful_response = HttpResponseRedirect("lol")
+unsuccessful_response = HttpResponseRedirect("woot")
 
 
 class SuccessfulRequirement(Requirement):

@@ -15,11 +15,13 @@ class Requirement(object):
 
     def is_fulfilled(self):
         raise ImproperlyConfigured(
-            "Requirements need to implement a `is_fulfilled` method.")
+            "Requirements need to implement a `is_fulfilled` method."
+        )
 
     def not_fulfilled(self):
         raise ImproperlyConfigured(
-            "Requirements need to implement a `not_fulfilled` method.")
+            "Requirements need to implement a `not_fulfilled` method."
+        )
 
     def decorator(self, fn):
         controller = RequirementController([self])
@@ -29,6 +31,7 @@ class Requirement(object):
             if not controller.control(request, args, kwargs):
                 return controller.retval
             return fn(request, *args, **kwargs)
+
         return wrapper
 
 
@@ -63,7 +66,8 @@ class RedirectRequirement(Requirement):
         if self.url_name is None:
             raise ImproperlyConfigured(
                 "You need to specify `url_name` or override the `get_url_name` "
-                "method.")
+                "method."
+            )
         return self.url_name
 
     def get_url(self):
@@ -77,7 +81,7 @@ class RedirectRequirement(Requirement):
 
 
 class LoggedIn(RedirectRequirement):
-    url_name = 'login'
+    url_name = "login"
 
     def is_fulfilled(self):
         return self.request.user.is_authenticated
@@ -89,6 +93,7 @@ class RequirementController(object):
     See views.ManagedAccessViewMixin.dispatch and decorators.access_requirements
     for example implementations.
     """
+
     def __init__(self, requirements):
         self.requirements = requirements
         self.retval = None

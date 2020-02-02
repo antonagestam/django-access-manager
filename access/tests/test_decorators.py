@@ -3,8 +3,11 @@ from django.test import TestCase
 from access.decorators import access_requirements
 
 from .utils import (
-    SuccessfulRequirement, UnSuccessfulRequirement, successful_response,
-    unsuccessful_response)
+    SuccessfulRequirement,
+    UnSuccessfulRequirement,
+    successful_response,
+    unsuccessful_response,
+)
 
 
 def test_view(request, *args, **kwargs):

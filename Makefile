@@ -9,6 +9,7 @@ install-test-requirements:
 
 lint:
 	flake8 .
+	black --check .
 
 test-coverage:
 	coverage run runtests.py
@@ -19,7 +20,7 @@ coveralls:
 clean:
 	rm -rf django_access_tools.egg-info __pycache__ build dist
 
-distribute:
+distribute: clean
 	python3 -m pip install --upgrade wheel twine setuptools
 	python3 setup.py sdist bdist_wheel
 	twine upload dist/*

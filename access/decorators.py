@@ -12,5 +12,7 @@ def access_requirements(*requirements):
             if not controller.control(request, args, kwargs):
                 return controller.retval
             return fn(request, *args, **kwargs)
+
         return wrapper
+
     return decorator
