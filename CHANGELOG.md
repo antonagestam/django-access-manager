@@ -8,3 +8,4 @@
 - Drop support for Django 2.0 and 2.1
 - Add support for Django 3.0
 - Changed `access.__version__` to a PEP 396 string
+- Use setup.cfg for packaging metadata

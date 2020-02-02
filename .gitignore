@@ -4,3 +4,5 @@ include
 *.pyc
 .coverage
 htmlcov
+dist/
+build

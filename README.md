@@ -24,11 +24,10 @@ pip install -e git+https://github.com/antonagestam/django-access-tools/#egg=acce
 
 ### Requirements
 
-Access requirements are specified by extending the `Requirement` class.
-The `is_fulfilled` method is what defines your logic of when the requirement
-is fulfilled. By overriding `not_fulfilled` you specify what should happen
-if the requirement is not fulfilled. For example this simple `LoggedIn`
-requirement:
+Access requirements are specified by extending the `Requirement` class. The
+`is_fulfilled` method is what defines your logic of when the requirement is
+fulfilled. By overriding `not_fulfilled` you specify what should happen if the
+requirement is not fulfilled. For example this simple `LoggedIn` requirement:
 
 ```python
 from django.http import Http404
@@ -184,7 +183,7 @@ class MyView(ManagedAccessViewMixin, View):
 Install test requirements:
 
 ```
-$ pip install -r test-requirements.txt
+$ pip install -e .[test]
 ```
 
 Run tests:
@@ -195,5 +194,5 @@ $ make test
 
 ## License
 
-django-access-tools is licensed under The MIT License (MIT).
-See [LICENSE file](./LICENSE) for more information.
+django-access-tools is licensed under The MIT License (MIT). See [LICENSE
+file](./LICENSE) for more information.
